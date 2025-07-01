@@ -10,6 +10,21 @@ services:
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
 
+  odoo18:
+    image: odoo:18.0
+    depends_on:
+      - db
+    ports:
+      - "8068:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+      - ./enterprise:/mnt/enterprise  # Mount enterprise addons
+    environment:
+      - ADDONS_PATH=/mnt/enterprise,/mnt/extra-addons
+    command: odoo -d odoo_db -i base --db_user=odoo --db_password=odoo --db_host=db
+
   odoo17:
     image: odoo:17.0
     depends_on:
@@ -17,10 +32,10 @@ services:
     ports:
       - "8067:8069"
     volumes:
-      - odoo-web-data:/var/lib/odoo
+      - odoo-web-data2:/var/lib/odoo
       - ./config:/etc/odoo
-      - ./addons:/mnt/extra-addons
-      - /c/Users/Bashir/Documents/odoo practice/ODOO CUSTOM MODULE ON SERVER/odoo-custom-module-on-server/enterprise:/mnt/enterprise  # Mount enterprise addons
+      - ./addons2:/mnt/extra-addons
+      - /root/ODOO-DEPLOY-DOCKER/enterprise:/mnt/enterprise  # Mount enterprise addons
     environment:
       - ADDONS_PATH=/mnt/enterprise,/mnt/extra-addons
     command: odoo -d odoo_db2 -i base --db_user=odoo --db_password=odoo --db_host=db
@@ -28,3 +43,4 @@ services:
 volumes:
   odoo-web-data:
   odoo-db-data:
+  odoo-web-data2:
